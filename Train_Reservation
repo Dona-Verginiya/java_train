@@ -1,0 +1,169 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class User {
+    // Attributes
+    private String name;
+    private int age;
+    private String id;
+
+    // Constructor
+    public User(String name, int age, String id) {
+        this.name = name;
+        this.age = age;
+        this.id = id;
+    }
+
+    // Getter methods
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    // Override toString for easy printing
+    @Override
+    public String toString() {
+        return "User{name='" + name + "', age=" + age + ", id='" + id + "'}";
+    }
+}
+
+class TrainReservation {
+    // Attributes
+    private String trainName;
+    private int trainNumber;
+    private int availableSeats;
+    private List<User> passengers;
+
+    // Constructor
+    public TrainReservation(String trainName, int trainNumber, int availableSeats) {
+        this.trainName = trainName;
+        this.trainNumber = trainNumber;
+        this.availableSeats = availableSeats;
+        this.passengers = new ArrayList<>();
+    }
+
+    // Book a seat
+    public boolean bookSeat(User user) {
+        if (availableSeats > 0) {
+            passengers.add(user);
+            availableSeats--;
+            System.out.println("Seat booked successfully for " + user.getName());
+            return true;
+        } else {
+            System.out.println("No available seats for " + user.getName());
+            return false;
+        }
+    }
+
+    // Cancel a reservation
+    public boolean cancelReservation(String userId) {
+        for (User passenger : passengers) {
+            if (passenger.getId().equals(userId)) {
+                passengers.remove(passenger);
+                availableSeats++;
+                System.out.println("Reservation cancelled for " + passenger.getName());
+                return true;
+            }
+        }
+        System.out.println("No reservation found for ID: " + userId);
+        return false;
+    }
+
+    // View all passengers
+    public void viewPassengers() {
+        System.out.println("Passengers on " + trainName + ":");
+        for (User passenger : passengers) {
+            System.out.println(passenger);
+        }
+    }
+
+    // Getter methods
+    public String getTrainName() {
+        return trainName;
+    }
+
+    public int getTrainNumber() {
+        return trainNumber;
+    }
+
+    public int getAvailableSeats() {
+        return availableSeats;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Create a TrainReservation object
+        System.out.println("Enter train name:");
+        String trainName = scanner.nextLine();
+        
+        System.out.println("Enter train number:");
+        int trainNumber = scanner.nextInt();
+        
+        System.out.println("Enter number of available seats:");
+        int availableSeats = scanner.nextInt();
+        
+        TrainReservation train = new TrainReservation(trainName, trainNumber, availableSeats);
+
+        while (true) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Book a seat");
+            System.out.println("2. Cancel a reservation");
+            System.out.println("3. View passengers");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline
+
+            switch (choice) {
+                case 1:
+                    // Book a seat
+                    System.out.println("Enter passenger name:");
+                    String name = scanner.nextLine();
+                    
+                    System.out.println("Enter passenger age:");
+                    int age = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline
+                    
+                    System.out.println("Enter passenger ID:");
+                    String id = scanner.nextLine();
+                    
+                    User user = new User(name, age, id);
+                    train.bookSeat(user);
+                    break;
+
+                case 2:
+                    // Cancel a reservation
+                    System.out.println("Enter passenger ID to cancel:");
+                    String userId = scanner.nextLine();
+                    train.cancelReservation(userId);
+                    break;
+
+                case 3:
+                    // View passengers
+                    train.viewPassengers();
+                    break;
+
+                case 4:
+                    // Exit
+                    System.out.println("Exiting the system. Goodbye!");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+}
